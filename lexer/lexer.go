@@ -75,8 +75,8 @@ const (
 	comma
 	dot
 
-	intLiter
-	floatLiter
+	integerLiter
+	floatingPointLiter
 	stringLiter
 
 	eof
@@ -194,16 +194,18 @@ func isKeyword(word string) bool {
 }
 
 func isIdentifier(word string) bool {
-	reg := regexp.MustCompile("([_a-zA-Z]|\\p{L})([_a-zA-Z0-9]|\\p{L})*")
+	reg := regexp.MustCompile("^([_a-zA-Z]|\\p{L})([_a-zA-Z0-9]|\\p{L})*$")
 	return reg.Match([]byte(word))
 }
 
-func newKeywordToken(word string) Token {
+func isInteger(word string) bool {
+	reg := regexp.MustCompile("^0|([1-9][0-9]*)|(0x[0-9a-zA-Z]+)$")
+	return reg.Match([]byte(word))
+}
+
+func keywordType(word string) TokenType {
 	tokenType, _ := keywords[word]
-	return Token{
-		Type:    tokenType,
-		Literal: Literal(word),
-	}
+	return tokenType
 }
 
 func (l *Lexer) NextToken() Token {
@@ -257,14 +259,16 @@ func (l *Lexer) NextToken() Token {
 	default:
 		word := l.readWord()
 		if isKeyword(word) {
-			token = newKeywordToken(word)
+			token.Type = keywordType(word)
 		} else if isIdentifier(word) {
 			token.Type = identifier
-			token.Literal = Literal(word)
+		} else if isInteger(word) {
+			token.Type = integerLiter
 		} else {
 			token.Type = illegal
-			token.Literal = Literal(word)
 		}
+
+		token.Literal = Literal(word)
 		return token
 	}
 	l.readChar()

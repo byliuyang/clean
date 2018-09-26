@@ -204,6 +204,22 @@ func TestNextToken(t *testing.T) {
 			Literal:"αβ",
 		},
 		{
+			Type: integerLiter,
+			Literal:"42",
+		},
+		{
+			Type: integerLiter,
+			Literal:"0600",
+		},
+		{
+			Type: integerLiter,
+			Literal:"0xBadFace",
+		},
+		{
+			Type:integerLiter,
+			Literal:"170141183460469231731687303715884105727",
+		},
+		{
 			Type:    eof,
 			Literal: Literal(0),
 		},
@@ -214,6 +230,10 @@ func TestNextToken(t *testing.T) {
 break default func interface case defer clean map struct else goto package switch const fallthrough if range type
 continue for import return var
 a _x9 ThisVariableIsExported αβ
+42
+0600
+0xBadFace
+170141183460469231731687303715884105727
 `
 	lexer := New(source)
 	for _, test := range tests {
