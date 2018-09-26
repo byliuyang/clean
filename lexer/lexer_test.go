@@ -188,6 +188,22 @@ func TestNextToken(t *testing.T) {
 			Literal:"var",
 		},
 		{
+			Type: identifier,
+			Literal:"a",
+		},
+		{
+			Type: identifier,
+			Literal:"_x9",
+		},
+		{
+			Type: identifier,
+			Literal:"ThisVariableIsExported",
+		},
+		{
+			Type:identifier,
+			Literal:"αβ",
+		},
+		{
 			Type:    eof,
 			Literal: Literal(0),
 		},
@@ -197,6 +213,7 @@ func TestNextToken(t *testing.T) {
 + - * / % & | ^ < > = ! () [] {} , . ; ?
 break default func interface case defer clean map struct else goto package switch const fallthrough if range type
 continue for import return var
+a _x9 ThisVariableIsExported αβ
 `
 	lexer := New(source)
 	for _, test := range tests {

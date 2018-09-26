@@ -1,5 +1,7 @@
 package lexer
 
+import "regexp"
+
 type TokenType int
 
 type Literal string
@@ -152,30 +154,30 @@ func (l *Lexer) isDelimiter() bool {
 		l.ch == 0
 }
 
-var keywords = map[string]TokenType {
-	"break":breakKeyword,
-	"default": defaultKeyword,
-	"func": funcKeyword,
-	"interface": interfaceKeyword,
-	"case": caseKeyword,
-	"defer": deferKeyword,
-	"clean": cleanKeyword,
-	"map": mapKeyword,
-	"struct": structKeyword,
-	"else": elseKeyword,
-	"goto": gotoKeyword,
-	"package": packageKeyword,
-	"switch": switchKeyword,
-	"const": constKeyword,
+var keywords = map[string]TokenType{
+	"break":       breakKeyword,
+	"default":     defaultKeyword,
+	"func":        funcKeyword,
+	"interface":   interfaceKeyword,
+	"case":        caseKeyword,
+	"defer":       deferKeyword,
+	"clean":       cleanKeyword,
+	"map":         mapKeyword,
+	"struct":      structKeyword,
+	"else":        elseKeyword,
+	"goto":        gotoKeyword,
+	"package":     packageKeyword,
+	"switch":      switchKeyword,
+	"const":       constKeyword,
 	"fallthrough": fallthroughKeyword,
-	"if": ifKeyword,
-	"range": rangeKeyword,
-	"type": typeKeyword,
-	"continue": continueKeyword,
-	"for": forKeyword,
-	"import": importKeyword,
-	"return": returnKeyword,
-	"var": varKeyword,
+	"if":          ifKeyword,
+	"range":       rangeKeyword,
+	"type":        typeKeyword,
+	"continue":    continueKeyword,
+	"for":         forKeyword,
+	"import":      importKeyword,
+	"return":      returnKeyword,
+	"var":         varKeyword,
 }
 
 func (l *Lexer) readWord() string {
@@ -191,10 +193,15 @@ func isKeyword(word string) bool {
 	return ok
 }
 
+func isIdentifier(word string) bool {
+	reg := regexp.MustCompile("([_a-zA-Z]|\\p{L})([_a-zA-Z0-9]|\\p{L})*")
+	return reg.Match([]byte(word))
+}
+
 func newKeywordToken(word string) Token {
 	tokenType, _ := keywords[word]
 	return Token{
-		Type: tokenType,
+		Type:    tokenType,
 		Literal: Literal(word),
 	}
 }
@@ -251,6 +258,9 @@ func (l *Lexer) NextToken() Token {
 		word := l.readWord()
 		if isKeyword(word) {
 			token = newKeywordToken(word)
+		} else if isIdentifier(word) {
+			token.Type = identifier
+			token.Literal = Literal(word)
 		} else {
 			token.Type = illegal
 			token.Literal = Literal(word)
