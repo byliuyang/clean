@@ -220,6 +220,26 @@ func TestNextToken(t *testing.T) {
 			Literal:"170141183460469231731687303715884105727",
 		},
 		{
+			Type:floatingPointLiter,
+			Literal:"0.",
+		},
+		{
+			Type:floatingPointLiter,
+			Literal:"72.40",
+		},
+		{
+			Type:floatingPointLiter,
+			Literal:"072.40",
+		},
+		{
+			Type:floatingPointLiter,
+			Literal:"2.71828",
+		},
+		{
+			Type:floatingPointLiter,
+			Literal:"1E6",
+		},
+		{
 			Type:    eof,
 			Literal: Literal(0),
 		},
@@ -234,6 +254,11 @@ a _x9 ThisVariableIsExported αβ
 0600
 0xBadFace
 170141183460469231731687303715884105727
+0.
+72.40
+072.40
+2.71828
+1E6
 `
 	lexer := New(source)
 	for _, test := range tests {

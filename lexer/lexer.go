@@ -1,6 +1,8 @@
 package lexer
 
-import "regexp"
+import (
+	"regexp"
+)
 
 type TokenType int
 
@@ -132,6 +134,7 @@ func (l *Lexer) eatWhiteSpace() {
 
 func (l *Lexer) isDelimiter() bool {
 	return l.isWhiteSpace() ||
+		l.ch == '+' ||
 		l.ch == '-' ||
 		l.ch == '*' ||
 		l.ch == '/' ||
@@ -194,13 +197,18 @@ func isKeyword(word string) bool {
 }
 
 func isIdentifier(word string) bool {
-	reg := regexp.MustCompile("^([_a-zA-Z]|\\p{L})([_a-zA-Z0-9]|\\p{L})*$")
-	return reg.Match([]byte(word))
+	reg := regexp.MustCompile("^(([_a-zA-Z]|\\p{L})([_a-zA-Z0-9]|\\p{L})*)$")
+	return reg.MatchString(word)
 }
 
 func isInteger(word string) bool {
-	reg := regexp.MustCompile("^0|([1-9][0-9]*)|(0x[0-9a-zA-Z]+)$")
-	return reg.Match([]byte(word))
+	reg := regexp.MustCompile("^(0|[0-9]+|(0x[0-9a-zA-Z]+))$")
+	return reg.MatchString(word)
+}
+
+func isFloatingPoint(word string) bool {
+	reg := regexp.MustCompile("^([0-9]*(\\.[0-9]*)?((e|E)[0-9]+)?)$")
+	return reg.MatchString(word)
 }
 
 func keywordType(word string) TokenType {
@@ -264,6 +272,8 @@ func (l *Lexer) NextToken() Token {
 			token.Type = identifier
 		} else if isInteger(word) {
 			token.Type = integerLiter
+		} else if isFloatingPoint(word) {
+			token.Type = floatingPointLiter
 		} else {
 			token.Type = illegal
 		}
