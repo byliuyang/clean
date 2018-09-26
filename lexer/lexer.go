@@ -118,11 +118,11 @@ func (l *Lexer) readChar() {
 	l.readPos++
 }
 
-func (l *Lexer)isWhiteSpace() bool {
-	return l.ch == ' ' || l.ch == '\t' || l.ch == '\n' ||  l.ch == '\r'
+func (l *Lexer) isWhiteSpace() bool {
+	return l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r'
 }
 
-func (l *Lexer) eatWhiteSpace()  {
+func (l *Lexer) eatWhiteSpace() {
 	for l.isWhiteSpace() {
 		l.readChar()
 	}
