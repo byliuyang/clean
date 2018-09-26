@@ -96,6 +96,98 @@ func TestNextToken(t *testing.T) {
 			Literal: Literal('?'),
 		},
 		{
+			Type: breakKeyword,
+			Literal:"break",
+		},
+		{
+			Type: defaultKeyword,
+			Literal:"default",
+		},
+		{
+			Type: funcKeyword,
+			Literal:"func",
+		},
+		{
+			Type: interfaceKeyword,
+			Literal:"interface",
+		},
+		{
+			Type: caseKeyword,
+			Literal:"case",
+		},
+		{
+			Type: deferKeyword,
+			Literal:"defer",
+		},
+		{
+			Type: cleanKeyword,
+			Literal:"clean",
+		},
+		{
+			Type: mapKeyword,
+			Literal:"map",
+		},
+		{
+			Type: structKeyword,
+			Literal:"struct",
+		},
+		{
+			Type: elseKeyword,
+			Literal:"else",
+		},
+		{
+			Type: gotoKeyword,
+			Literal:"goto",
+		},
+		{
+			Type: packageKeyword,
+			Literal:"package",
+		},
+		{
+			Type: switchKeyword,
+			Literal:"switch",
+		},
+		{
+			Type: constKeyword,
+			Literal:"const",
+		},
+		{
+			Type: fallthroughKeyword,
+			Literal:"fallthrough",
+		},
+		{
+			Type: ifKeyword,
+			Literal:"if",
+		},
+		{
+			Type: rangeKeyword,
+			Literal:"range",
+		},
+		{
+			Type: typeKeyword,
+			Literal:"type",
+		},
+		{
+			Type: continueKeyword,
+			Literal:"continue",
+		},
+		{
+			Type: forKeyword,
+			Literal:"for",
+		},
+		{
+			Type: importKeyword,
+			Literal:"import",
+		},
+		{
+			Type: returnKeyword,
+			Literal:"return",
+		},
+		{
+			Type: varKeyword,
+			Literal:"var",
+		},
+		{
 			Type:    eof,
 			Literal: Literal(0),
 		},
@@ -103,6 +195,8 @@ func TestNextToken(t *testing.T) {
 
 	source := `
 + - * / % & | ^ < > = ! () [] {} , . ; ?
+break default func interface case defer clean map struct else goto package switch const fallthrough if range type
+continue for import return var
 `
 	lexer := New(source)
 	for _, test := range tests {

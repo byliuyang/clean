@@ -128,6 +128,77 @@ func (l *Lexer) eatWhiteSpace() {
 	}
 }
 
+func (l *Lexer) isDelimiter() bool {
+	return l.isWhiteSpace() ||
+		l.ch == '-' ||
+		l.ch == '*' ||
+		l.ch == '/' ||
+		l.ch == '%' ||
+		l.ch == '&' ||
+		l.ch == '|' ||
+		l.ch == '^' ||
+		l.ch == '<' ||
+		l.ch == '>' ||
+		l.ch == '=' ||
+		l.ch == '!' ||
+		l.ch == '(' ||
+		l.ch == '[' ||
+		l.ch == '{' ||
+		l.ch == ',' ||
+		l.ch == ')' ||
+		l.ch == ']' ||
+		l.ch == '}' ||
+		l.ch == ';' ||
+		l.ch == 0
+}
+
+var keywords = map[string]TokenType {
+	"break":breakKeyword,
+	"default": defaultKeyword,
+	"func": funcKeyword,
+	"interface": interfaceKeyword,
+	"case": caseKeyword,
+	"defer": deferKeyword,
+	"clean": cleanKeyword,
+	"map": mapKeyword,
+	"struct": structKeyword,
+	"else": elseKeyword,
+	"goto": gotoKeyword,
+	"package": packageKeyword,
+	"switch": switchKeyword,
+	"const": constKeyword,
+	"fallthrough": fallthroughKeyword,
+	"if": ifKeyword,
+	"range": rangeKeyword,
+	"type": typeKeyword,
+	"continue": continueKeyword,
+	"for": forKeyword,
+	"import": importKeyword,
+	"return": returnKeyword,
+	"var": varKeyword,
+}
+
+func (l *Lexer) readWord() string {
+	start := l.currPos
+	for !l.isDelimiter() {
+		l.readChar()
+	}
+	return l.input[start:l.currPos]
+}
+
+func isKeyword(word string) bool {
+	_, ok := keywords[word]
+	return ok
+}
+
+func newKeywordToken(word string) Token {
+	tokenType, _ := keywords[word]
+	return Token{
+		Type: tokenType,
+		Literal: Literal(word),
+	}
+}
+
 func (l *Lexer) NextToken() Token {
 	var token Token
 	l.eatWhiteSpace()
@@ -177,7 +248,14 @@ func (l *Lexer) NextToken() Token {
 	case 0:
 		token = NewToken(eof, l.ch)
 	default:
-		token = NewToken(illegal, l.ch)
+		word := l.readWord()
+		if isKeyword(word) {
+			token = newKeywordToken(word)
+		} else {
+			token.Type = illegal
+			token.Literal = Literal(word)
+		}
+		return token
 	}
 	l.readChar()
 	return token
